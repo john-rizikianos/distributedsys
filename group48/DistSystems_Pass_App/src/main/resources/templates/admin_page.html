@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+
+    <link href="register_style.css" rel="stylesheet" media="all">
+</head>
+
+<body>
+<div class="page-wrapper bg-gra-02 p-t-130 p-b-100 font-poppins">
+    <div class="wrapper wrapper--w680">
+        <div class="card card-4">
+            <div class="card-body">
+                <h2 class="title">Admin Dashboard</h2>
+                <form id="admin_form">
+                    <div class="row row-space">
+                        <div class="col-2">
+                            <div class="input-group">
+                                <label class="label">Username</label>
+                                <input class="input--style-4" type="text" id="user_name">
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="input-group">
+                                <label class="label">Password</label>
+                                <input class="input--style-4" type="text" id="password">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-space">
+                        <div class="p-t-15">
+                            <button id="oasa_button" class="btn btn--radius-2 btn--blue" type="button">Add OASA Employee</button>
+                        </div>
+                        <div class="p-t-15">
+                            <button id="oaed_button" class="btn btn--radius-2 btn--blue" type="button">Add OAED Employee</button>
+                        </div>
+                    </div>
+                </form>
+                <br>
+                <br>
+                <form th:action="@{/logout}" id="sign_out" method="post">
+                    <a href="#" onclick="document.getElementById('sign_out').submit();">Sign Out</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let oasa_button = document.getElementById("oasa_button");
+    let oaed_button = document.getElementById("oaed_button");
+    let admin_form = document.getElementById("admin_form");
+
+
+    oasa_button.addEventListener("click", (event)=>{
+        event.preventDefault();
+        console.log("Post form submitted");
+
+        let user_name = document.getElementById("user_name").value;
+        let password = document.getElementById("password").value;
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        let user_data =
+            [
+                {
+                    "fullName": user_name,
+                    "password": password,
+                    "appStatus":"waiting",
+                    "userRole": "ROLE_OASA"
+                }
+            ]
+
+        const options = {
+            method: `POST`,
+            headers: myHeaders,
+            body: JSON.stringify(user_data)
+        };
+
+        fetch(window.location.protocol + "//" + window.location.host + "/saveUser",options).then(data => {
+            if (!data.ok) {
+                alert("User already exists")
+                throw data;
+            }else{
+                alert("Succesfully created OASA account");
+            }
+        });
+        admin_form.reset();
+    });
+
+    oaed_button.addEventListener("click", (event)=>{
+        event.preventDefault();
+        console.log("Post form submitted");
+
+        let user_name = document.getElementById("user_name").value;
+        let password = document.getElementById("password").value;
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        let user_data =
+            [
+                {
+                    "fullName": user_name,
+                    "password": password,
+                    "appStatus":"waiting",
+                    "userRole": "ROLE_OAED"
+                }
+            ]
+
+        const options = {
+            method: `POST`,
+            headers: myHeaders,
+            body: JSON.stringify(user_data)
+        };
+
+        console.log(window.location.protocol + "//" + window.location.host + "saveUser");
+
+        fetch(window.location.protocol + "//" + window.location.host + "/saveUser",options).then(data => {
+            if (!data.ok) {
+                alert("User already exists")
+                throw data;
+            }else{
+                alert("Succesfully created OAED account");
+            }
+        });
+        admin_form.reset();
+    });
+</script>
+</body>
+
+</html>

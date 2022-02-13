@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Approved Applications</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+</head>
+<body>
+<section class="main-content">
+    <a id="top"></a>
+    <div class="container">
+        <h4>Approved Applications</h4>
+        <form th:action="@{/logout}" method="post">
+            <button class="btn btn--radius-2 btn--blue" type="submit">Sign Out</button>
+        </form>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>user</th>
+                <th>Email</th>
+                <th>Generate</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="apUser : ${approved_users}">
+                <td th:class="${apUser.fullName}">
+                    <div>
+                        <div >
+                            <h5  th:text="${apUser.fullName}"></h5>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div >
+                        <h5 th:text="${apUser.email}"></h5>
+                    </div>
+                </td>
+                <td>
+                    <button  id="create">Generate Pass</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <form action="#top">
+            <button type="submit">Back to Top</button>
+        </form>
+    </div>
+</section>
+
+<script>
+    document.querySelectorAll("#create").forEach(b => {
+        b.addEventListener("click", e => {
+            let myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            const options = {
+                method: `PUT`,
+                headers: myHeaders
+            };
+
+
+
+            fetch(window.location.href +"/enableUserPass/"+ b.parentNode.parentNode.firstElementChild.classList[0] + " " +  b.parentNode.parentNode.firstElementChild.classList[1],options).then(data => {
+                if (!data.ok) {
+                    throw data;
+                }else{
+                    b.parentNode.parentNode.parentNode.removeChild(b.parentNode.parentNode);
+                }
+            });
+        });
+
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+</body>
+</html>

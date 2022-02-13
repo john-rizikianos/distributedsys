@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit Your Application</title>
+</head>
+
+<body>
+<div>
+    <div>
+        <div>
+            <div>
+                <h2>User Profile</h2>
+                <div>
+                    <div >
+                        <div>
+                            <u class="label">Full Name</u>
+                            <input type="text" id="full_name" th:value="${user.fullName}" readonly>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <u class="label">Unemployed Since</u>
+                            <input type="text" id="unemployed" th:value="${user.startDate}" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <div>
+                            <u class="label">Email Address</u>
+                            <input type="text" id="email" th:value="${user.email}" readonly>
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <u class="label">Phone Number</u>
+                            <input type="text" id="phone_number" th:value="${user.phoneNum}" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <div>
+                            <u class="label">ID Number</u>
+                            <input type="text" id="ssn" th:value="${user.userId}" readonly>
+                        </div>
+                    </div>
+                    <div>
+                        <u class="label">Application Status</u>
+                        <td th:switch="${user.appStatus}">
+                            <span th:case="waiting">WAITING</span>
+                            <span th:case="rejected">REJECTED</span>
+                            <span th:case="accepted">ACCEPTED</span>
+                        </td>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <td th:switch="${user.appStatus}">
+                            <div th:case="waiting">
+                                <button id="submit_button" type="button">Submit Application</button>
+                            </div>
+                            <div th:case="accepted" >
+                                <b><span th:if="${#strings.toString(user.appStatus)} == 'accepted'" ></span></b>
+                                <h6 th:if= "${#strings.toString(user.passStatus)} == 'active'">Your pass is active! Please visit a ticket counter to obtain it</h6>
+                                <h6 th:if= "${user.passStatus == null}">Your request has been transferred to OASA</h6>
+                            </div>
+                        </td>
+                    </div>
+                    <div>
+                        <form th:action="@{/logout}" method="post">
+                            <div>
+                                <button type="submit">Sign Out</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    var submit_button = document.getElementById("submit_button");
+    submit_button.addEventListener("click", (event)=>{
+
+        event.preventDefault();
+        console.log("Post form submitted");
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        let full_name = document.getElementById("full_name").value;
+        let ssn = document.getElementById("ssn").value;
+        let unemployed = document.getElementById("unemployed").value;
+
+        let app_data =
+            [
+                {
+                    "userName": full_name,
+                    "ssn":ssn,
+                    "unemployedSince" : unemployed
+                }
+            ]
+
+        const options = {
+            method: `POST`,
+            headers: myHeaders,
+            body: JSON.stringify(app_data)
+        };
+
+        fetch(window.location.href +"/saveApplication",options).then(data => {
+            if (!data.ok) {
+                alert("You have already submitted your application");
+                throw data;
+            }else{
+                alert("Succesfully submitted application!");
+            }
+        });
+    });
+</script>
+</body>
+</html>

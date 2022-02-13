@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+
+    <link href="register_style.css" rel="stylesheet" media="all">
+</head>
+
+<body>
+                <h2 class="title">Register</h2>
+                <form id="register_form">
+                                <label >first name</label>
+                                <input type="text" id="first_name">
+                                <label c>last name</label>
+                                <input type="text" id="last_name">
+                                <label c>Email</label>
+                                <input type="email" id="email">
+                                <label >Phone Number</label>
+                                <input type="text" id="phone">
+                    <br>
+                                <label >Password</label>
+                                <input type="text" id="password">
+                    <label >Age</label>
+                    <input type="text" id="age">
+                    <label >Address</label>
+                    <input type="text" id="addr">
+                                <label >Social Security Number</label>
+                                <input type="text" id="ssn">
+                    <br>
+                                <label >Unemployed Since</label>
+                                <input type="date" id="unemployed" value="2022-01-01">
+                                <button id="submit_button" class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+
+                </form>
+
+
+<script>
+    let register_form = document.getElementById("register_form");
+    register_form.addEventListener("submit", (event)=>{
+        event.preventDefault();
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        let first_name = document.getElementById("first_name").value;
+        let age = document.getElementById("age").value;
+        let addr = document.getElementById("addr").value;
+        let last_name = document.getElementById("last_name").value;
+        let password = document.getElementById("password").value;
+        let ssn = document.getElementById("ssn").value;
+        let phone = document.getElementById("phone").value;
+        let email = document.getElementById("email").value;
+        let date = document.getElementById("unemployed").value;
+        let user_data =
+            [
+                {
+                    "fullName": first_name + " " + last_name,
+                    "password": password,
+                    "userRole": "ROLE_USER",
+                    "userId":ssn,
+                    "email": email,
+                    "appStatus":"waiting",
+                    "phoneNum": phone,
+                    "startDate" : date,
+                    "address" : addr,
+                    "age" : age
+                }
+            ]
+
+        const options = {
+            method: `POST`,
+            headers: myHeaders,
+            body: JSON.stringify(user_data)
+        };
+
+        fetch("/saveUser",options).then(data => {
+            if (!data.ok) {
+                alert("You have already registered")
+                throw data;
+            }else{
+            }
+        });
+        register_form.reset();
+    });
+
+</script>
+</body>
+
+</html>

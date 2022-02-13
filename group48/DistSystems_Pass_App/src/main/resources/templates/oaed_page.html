@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Applications</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+</head>
+<body>
+<section class="main-content">
+    <a id="top"></a>
+    <div class="container">
+        <h4>All Applications</h4>
+        <form th:action="@{/logout}" method="post">
+            <button class="btn btn--radius-2 btn--blue" type="submit">Sign Out</button>
+        </form>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Citizen</th>
+                <th>Unemployed Since</th>
+                <th>User ID</th>
+                <th>Approve/Reject</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="fp_app : ${applications}">
+                <td th:class="${fp_app.userName}">
+                    <div class="d-flex align-items-center">
+                        <div class="user-info__basic">
+                            <h5 class="mb-0" th:text="${fp_app.userName}"></h5>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="d-flex align-items-baseline">
+                        <h5 class="mr-1" th:text="${fp_app.unemployedSince}"></h5>
+                    </div>
+                </td>
+                <td>
+                    <div class="d-flex align-items-baseline">
+                        <h5 class="mr-2" th:text="${fp_app.ssn}"></h5>
+                    </div>
+                </td>
+                <td>
+                    <button class="btn btn--radius-2 btn--blue btn--pill" id="approve">Approve</button>
+                    <button class="btn btn--radius-2 btn--blue btn--pill" id="reject">Reject</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <form action="#top">
+            <button type="submit">Back to Top</button>
+        </form>
+    </div>
+</section>
+
+<script>
+    document.querySelectorAll("#approve").forEach(b => {
+        b.addEventListener("click", e => {
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            const options = {
+                method: `PUT`,
+                headers: myHeaders,
+                body: "accepted"
+            };
+
+            console.log(window.location.href +"/updateCitizen/"+ b.parentNode.parentNode.firstElementChild.classList[0] + " " +  b.parentNode.parentNode.firstElementChild.classList[1]);
+            fetch(window.location.href +"/updateCitizen/"+ b.parentNode.parentNode.firstElementChild.classList[0] + " " +  b.parentNode.parentNode.firstElementChild.classList[1],options).then(data => {
+                if (!data.ok) {
+                    throw data;
+                }else{
+                    b.parentNode.parentNode.parentNode.removeChild(b.parentNode.parentNode);
+                }
+            });
+        });
+
+    });
+    document.querySelectorAll("#reject").forEach(b => {
+        b.addEventListener("click", e => {
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+
+            const options = {
+                method: `PUT`,
+                headers: myHeaders,
+                body: "rejected"
+            };
+
+            fetch(window.location.href +"/updateCitizen/"+ b.parentNode.parentNode.firstElementChild.classList[0] + " " +  b.parentNode.parentNode.firstElementChild.classList[1],options).then(data => {
+                if (!data.ok) {
+                    throw data;
+                }else{
+                    b.parentNode.parentNode.parentNode.removeChild(b.parentNode.parentNode);
+                }
+            });
+        });
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+</body>
+</html>
